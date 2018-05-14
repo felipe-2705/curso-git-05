@@ -225,7 +225,6 @@ void dijkstra(Grafo *g, int orig, int dest, double *dist, int * ancestrais) {
                 }
             }
         }
-        for(j=0; j< n_vertices; j++) printf("%s : %lf; ", g->pontos[j]->nome, dist[j]);
 
         if(aux == dest)break;
         aux = orig;
@@ -242,6 +241,29 @@ void mostrar_caminho(Grafo *g, int orig, int dest, int *ancestrais, double arq_s
         mostrar_caminho(g, orig, ancestrais[dest], ancestrais, arq_size);
         printf("->%s ", g->pontos[dest]->nome);
     }
+}
+
+void cobertura(Grafo *g, int orig, int max_p){
+    int * pesos = calloc(g->n_vertices, sizeof(int));
+    pesos[orig] = -1;
+    printf("Cobertura de %d pontos a partir de %s:\n", max_p, g->pontos[orig]->nome); 
+    cobertura_aux(g, orig, pesos, max_p);
+    int i =0;
+    for(i=0; i<g->n_vertices; i++)if(pesos[i] > 0)printf("%s; ", g->pontos[i]->nome);
+}
+
+void cobertura_aux(Grafo *g, int orig, int *pesos, int max){
+    if(max == 0)return;
+    int i;
+    int vertice, suc;
+    for(i=0; i < g->n_vertices; i++){
+        suc = get_elemento(g->arestas[orig], i, &vertice);
+        if(suc){
+            pesos[vertice] = 1;
+            cobertura_aux(g, vertice, pesos, max-1);
+        }
+    }
+
 }
 
 void liberar_grafo(Grafo ** g) {

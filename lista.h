@@ -11,6 +11,7 @@ int contem(Lista *l, int i);
 int buscar_elemento(Lista *l, int elem, int *item, double * dist);
 int remover_elemento(Lista * l, int elmt);
 void mostrar_lista(Lista *a);
+int get_elemento(Lista *l, int posicao, int *vertice);
 void liberar_lista(Lista **l);
 
 #endif // LISTA_H_INCLUDED

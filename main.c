@@ -53,15 +53,15 @@ int main(int argc, char const *argv[])
 
 void showMenu(int * op) {
     printInBlock("Menu", 0);
-    printInBlockN(01, "Criar Grafo a partir de um arquivo", 0);
-    printInBlockN(02, "Carregar arestas a partir de um arquivo", 0);
-    printInBlockN(03, "Ver numero de vertices", 0);
-    printInBlockN(04, "Ver grau de um vertice", 0);
-    printInBlockN(05, "Ver adjacencias de um vertice", 0);
-    printInBlockN(06, "Enviar arquivo", 0);
-    printInBlockN(07, "Ver alcance por tempo", 0);
-    printInBlockN(08, "Ver cobertura", 0);
-    printInBlockN(09, "Mostrar grafo", 0);
+    printInBlockN( 1, "Criar Grafo a partir de um arquivo", 0);
+    printInBlockN( 2, "Carregar arestas a partir de um arquivo", 0);
+    printInBlockN( 3, "Ver numero de vertices", 0);
+    printInBlockN( 4, "Ver grau de um vertice", 0);
+    printInBlockN( 5, "Ver adjacencias de um vertice", 0);
+    printInBlockN( 6, "Enviar arquivo", 0);
+    printInBlockN( 7, "Ver alcance por tempo", 0);
+    printInBlockN( 8, "Ver cobertura", 0);
+    printInBlockN( 9, "Mostrar grafo", 0);
     printInBlockN(10, "Limpar grafo", 0);
     printInBlockN(11, "Sair", 1);
     
@@ -162,6 +162,16 @@ void verPoPAlcancados(Grafo *g) {
 
 void verCobertura(Grafo *g) {
     printInBlock("08. Ver cobertura em funcao de PoPs", 1);
+    
+    int vertice, max_p;
+
+    printf("Digite o identificador do PoP de origem: ");
+    setbuf(stdin, NULL);
+    scanf("%d", &vertice);
+    printf("Dite a quantidade de pontos para cobrir: ");
+    scanf("%d", &max_p);
+
+    cobertura(g, vertice, max_p);
 }
 
 void liberarGrafo(Grafo *g) {

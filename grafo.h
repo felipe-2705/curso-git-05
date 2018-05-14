@@ -28,5 +28,6 @@ void menor_transferencia(Grafo *g, int orig, int dest, double size);
 void dijkstra(Grafo *g, int orig, int dest, double *dist, int * ancestrais);
 void mostrar_caminho(Grafo *g, int orig, int dest, int *ancestrais, double arq_size);
 double tempo_de_envio(Grafo *g, int orig, int dest, int *rota, double arq_size);
-
+void cobertura_aux(Grafo *g, int orig, int *pesos, int max);
+void cobertura(Grafo *g, int orig, int max_p);
 #endif

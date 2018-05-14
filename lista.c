@@ -10,11 +10,13 @@ struct aresta_ {
 };
 
 struct lista_ {
+    int tam;
     Aresta *primeiro;
 };
 
 Lista *criar_lista() {
     Lista *l = malloc(sizeof(Lista));
+    l->tam = 0;
     l->primeiro = NULL;
     return l;
 }
@@ -32,6 +34,7 @@ void inserir_inicio(Lista *a, int n_no, int capacidade, double dist) {
     if (!vazia(a))item->proximo = a->primeiro;
     else item->proximo = NULL;
     a->primeiro = item;
+    a->tam++;
 }
 
 int contem(Lista *l, int i) {
@@ -60,6 +63,22 @@ int buscar_elemento(Lista *l, int elem, int * item_, double * dist) {
     return 0;
 }
 
+int get_elemento(Lista *l, int posicao, int * vertice){
+
+    if(posicao < 0 || posicao > l->tam) return 0;
+
+    Aresta *item = l->primeiro;
+    while (item != NULL) {
+        if (posicao == 0) {
+            *vertice = item->no;
+            return 1;
+        }
+        posicao--;
+        item = item->proximo;
+    }
+    return 0;
+}
+
 int remover_elemento(Lista *l, int elem) {
     Aresta *item = l->primeiro;
     Aresta * aux = NULL;
@@ -68,6 +87,7 @@ int remover_elemento(Lista *l, int elem) {
             if (aux != NULL)aux->proximo = item->proximo;
             else l->primeiro = NULL;
             free(item);
+            l->tam--;
             return 1;
         }
         aux = item;
