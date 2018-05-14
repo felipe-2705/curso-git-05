@@ -248,7 +248,7 @@ void cobertura(Grafo *g, int orig, int max_p){
     pesos[orig] = -1;
     printf("Cobertura de %d pontos a partir de %s:\n", max_p, g->pontos[orig]->nome); 
     cobertura_aux(g, orig, pesos, max_p);
-    int i =0;
+    int i;
     for(i=0; i<g->n_vertices; i++)if(pesos[i] > 0)printf("%s; ", g->pontos[i]->nome);
 }
 
