@@ -1,6 +1,5 @@
 #include<stdio.h>
 #include <stdlib.h>
-#include "grafo.h"
 #include "constroi_grafo.h"
 
 Grafo * constroi_grafo(char *path)

@@ -165,9 +165,7 @@ void menor_transferencia(Grafo *g, int orig, int dest, double size) {
     if (g != NULL) {
         int  * rota = calloc(g->n_vertices, sizeof(int));
         double * menor_caminho;
-        int i;
         dijkstra(g, orig, dest, menor_caminho, rota);
-        for (i = 0; i < g->n_vertices; i++)printf("%d _ ", rota[i]);
         printf("\nCaminho que o caminho percorrerá:\n");
         mostrar_caminho(g, orig, dest, rota, size);
         double t = tempo_de_envio(g, orig, dest, rota, size);
@@ -215,25 +213,20 @@ void dijkstra(Grafo *g, int orig, int dest, double *dist, int * ancestrais) {
             if (visitados[j] == 0 && dist[aux] >= dist[j])aux = j;
 
         visitados[aux] = 1;
-        printf("\nAnalisando: %s\n", g->pontos[aux]->nome);
         for (j = 0; j < n_vertices; j++) {
             if (visitados[j] == 0 && eh_adjacente(g, aux, j)) {
                
                 consultar_aresta(g, aux, j, &cap, &d);  
-                printf("%s( ", g->pontos[j]->nome);
-               
+
                 d_aux = dist[aux] + (1.0/cap)*d;
-                printf("%.3lf - %.3lf) ", d_aux, dist[j]);
                 if (d_aux < dist[j]) {
                     dist[j] = d_aux;
                     ancestrais[j] = aux;
                 }
             }
         }
-        printf("\n\n");
-        for(j=0; j< n_vertices; j++) printf("%s : %lf; ", g->pontos[j]->nome, dist[j]);
-        printf("\n");
 
+        if(aux == dest)break;
         aux = orig;
     }
 
@@ -248,6 +241,29 @@ void mostrar_caminho(Grafo *g, int orig, int dest, int *ancestrais, double arq_s
         mostrar_caminho(g, orig, ancestrais[dest], ancestrais, arq_size);
         printf("->%s ", g->pontos[dest]->nome);
     }
+}
+
+void cobertura(Grafo *g, int orig, int max_p){
+    int * pesos = calloc(g->n_vertices, sizeof(int));
+    pesos[orig] = -1;
+    printf("Cobertura de %d pontos a partir de %s:\n", max_p, g->pontos[orig]->nome); 
+    cobertura_aux(g, orig, pesos, max_p);
+    int i;
+    for(i=0; i<g->n_vertices; i++)if(pesos[i] > 0)printf("%s; ", g->pontos[i]->nome);
+}
+
+void cobertura_aux(Grafo *g, int orig, int *pesos, int max){
+    if(max == 0)return;
+    int i;
+    int vertice, suc;
+    for(i=0; i < g->n_vertices; i++){
+        suc = get_elemento(g->arestas[orig], i, &vertice, NULL, NULL);
+        if(suc){
+            pesos[vertice] = 1;
+            cobertura_aux(g, vertice, pesos, max-1);
+        }
+    }
+
 }
 
 void liberar_grafo(Grafo ** g) {

@@ -158,6 +158,17 @@ void calcularMelhorRota(Grafo *g) {
 
 void verPoPAlcancados(Grafo *g) {
     printInBlock("07. Ver PoPs alcancados ao enviar arquivo em funcao de tempo", 1);
+    int vertice, max_p, arq;
+
+    printf("Digite o identificador do PoP de origem: ");
+    setbuf(stdin, NULL);
+    scanf("%d", &vertice);
+    printf("Dite a quantidade de tempo (segundos): ");
+    scanf("%d", &max_p);
+    
+    printf("Digite o tamanho do arquivo(MB): ");
+    scanf("%d", &arq);
+    pops_alcancados(g, vertice, max_p, arq);
 }
 
 void verCobertura(Grafo *g) {

@@ -183,7 +183,7 @@ double tempo_de_envio(Grafo *g, int orig, int dest, int *rota, double arq_size){
 void dijkstra(Grafo *g, int orig, int dest, double *dist, int * ancestrais) {
     if (g == NULL)return;
 
-    int  cap, i, j, aux, n_vertices = g->n_vertices;
+    int  cap, i, j, k, sucesso, aux, n_vertices = g->n_vertices;
     double d, d_aux;
 
 
@@ -197,12 +197,10 @@ void dijkstra(Grafo *g, int orig, int dest, double *dist, int * ancestrais) {
 
     visitados[orig] = 1;
 
-    for (i = 0; i < n_vertices; i++) {
-        if (eh_adjacente(g, orig, i) && i != orig) {
-            consultar_aresta(g, orig, i, &cap, &d);
-            dist[i] = (1.0/cap)*d;
-            ancestrais[i] = orig;
-        }
+    for (i = 0; i < list_size(g->arestas[i]); i++) {
+            get_elemento(g->arestas[orig], i, &j, &cap, &d);
+            dist[j] = (1.0/cap)*d;
+            ancestrais[j] = orig;
     }
 
     aux = orig;
@@ -213,15 +211,13 @@ void dijkstra(Grafo *g, int orig, int dest, double *dist, int * ancestrais) {
             if (visitados[j] == 0 && dist[aux] >= dist[j])aux = j;
 
         visitados[aux] = 1;
-        for (j = 0; j < n_vertices; j++) {
-            if (visitados[j] == 0 && eh_adjacente(g, aux, j)) {
-               
-                consultar_aresta(g, aux, j, &cap, &d);  
-
+        for (j = 0; j < list_size(g->arestas[aux]); j++) {
+            sucesso = get_elemento(g->arestas[aux], j, &k, &cap, &d);
+            if (sucesso && visitados[k] == 0) {
                 d_aux = dist[aux] + (1.0/cap)*d;
-                if (d_aux < dist[j]) {
-                    dist[j] = d_aux;
-                    ancestrais[j] = aux;
+                if (d_aux < dist[k]) {
+                    dist[k] = d_aux;
+                    ancestrais[k] = aux;
                 }
             }
         }
@@ -246,10 +242,11 @@ void mostrar_caminho(Grafo *g, int orig, int dest, int *ancestrais, double arq_s
 void cobertura(Grafo *g, int orig, int max_p){
     int * pesos = calloc(g->n_vertices, sizeof(int));
     pesos[orig] = -1;
-    printf("Cobertura de %d pontos a partir de %s:\n", max_p, g->pontos[orig]->nome); 
+    printf("Cobertura de raio %d pontos a partir de %s:\n", max_p, g->pontos[orig]->nome); 
     cobertura_aux(g, orig, pesos, max_p);
     int i;
     for(i=0; i<g->n_vertices; i++)if(pesos[i] > 0)printf("%s; ", g->pontos[i]->nome);
+    printf("\n");
 }
 
 void cobertura_aux(Grafo *g, int orig, int *pesos, int max){
@@ -257,13 +254,50 @@ void cobertura_aux(Grafo *g, int orig, int *pesos, int max){
     int i;
     int vertice, suc;
     for(i=0; i < g->n_vertices; i++){
-        suc = get_elemento(g->arestas[orig], i, &vertice);
+        suc = get_elemento(g->arestas[orig], i, &vertice, NULL, NULL);
         if(suc){
             pesos[vertice] = 1;
             cobertura_aux(g, vertice, pesos, max-1);
         }
     }
 
+}
+
+double tempo_envio(Grafo *g, int orig, int dest, double size) {
+    if (g != NULL) {
+        int  * rota = calloc(g->n_vertices, sizeof(int));
+        double * menor_caminho;
+        dijkstra(g, orig, dest, menor_caminho, rota);
+        double t = tempo_de_envio(g, orig, dest, rota, size);
+        return t;
+    }
+}
+
+void pops_alcancados(Grafo *g, int orig, double max, double size){
+    int aux = max;
+    float * pesos = calloc(g->n_vertices, sizeof(float));
+    pesos[orig] = 0;
+    printf("\nPops alcancados no tempo de %ds iniciando de %s:\n", aux, g->pontos[orig]->nome);
+    pops_alcancados_aux(g, orig, pesos, max, size);
+    int i;
+    for(i=0; i<g->n_vertices; i++)if(pesos[i] > 0)  printf("%s; ", g->pontos[i]->nome);
+    printf("\n");
+}
+
+void pops_alcancados_aux(Grafo *g, int orig, float *pesos, double max, double size){
+    int i;
+    int vertice, cap, suc;
+    for(i=0; i < g->n_vertices; i++){
+       
+        suc = get_elemento(g->arestas[orig], i, &vertice, &cap, NULL);
+
+        if(suc && pesos[vertice] < max){
+            if(pesos[vertice]+pesos[orig]+(size/cap) <= max){
+                pesos[vertice] += pesos[orig]+(size/cap);
+                pops_alcancados_aux(g, vertice, pesos, max, size);
+            }
+        }
+    }
 }
 
 void liberar_grafo(Grafo ** g) {

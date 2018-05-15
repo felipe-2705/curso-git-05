@@ -30,4 +30,6 @@ void mostrar_caminho(Grafo *g, int orig, int dest, int *ancestrais, double arq_s
 double tempo_de_envio(Grafo *g, int orig, int dest, int *rota, double arq_size);
 void cobertura_aux(Grafo *g, int orig, int *pesos, int max);
 void cobertura(Grafo *g, int orig, int max_p);
+void pops_alcancados(Grafo *g, int orig, double max, double size);
+void pops_alcancados_aux(Grafo *g, int orig, float *pesos, double max, double size);
 #endif

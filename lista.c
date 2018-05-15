@@ -5,7 +5,7 @@
 struct aresta_ {
     int no;
     int capacidade;
-    int distancia;
+    double distancia;
     struct aresta_ *proximo;
 };
 
@@ -63,14 +63,16 @@ int buscar_elemento(Lista *l, int elem, int * item_, double * dist) {
     return 0;
 }
 
-int get_elemento(Lista *l, int posicao, int * vertice){
+int get_elemento(Lista *l, int posicao, int * vertice, int * capacidade, double * distancia){
 
     if(posicao < 0 || posicao > l->tam) return 0;
 
     Aresta *item = l->primeiro;
     while (item != NULL) {
         if (posicao == 0) {
-            *vertice = item->no;
+            if(vertice != NULL)*vertice = item->no;
+            if(capacidade!= NULL)*capacidade = item->capacidade;
+            if(distancia != NULL)*distancia = item->distancia;
             return 1;
         }
         posicao--;
@@ -103,6 +105,11 @@ void mostrar_lista(Lista *a) {
         item = item->proximo;
     }
     printf("\n");
+}
+
+int list_size(Lista *l){
+    if(l == NULL) return 0;
+    return l->tam;
 }
 
 void liberar_lista(Lista ** l) {
